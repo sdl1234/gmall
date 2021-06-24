@@ -2,6 +2,7 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,30 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "sku信息 管理")
 @RestController
-@RequestMapping("pms/pmssku")
+@RequestMapping("pms/sku")
 public class PmsSkuController {
 
     @Autowired
     private PmsSkuService pmsSkuService;
+
+
+    /**
+     * 查询spu的所有sku信息
+     * @param spuId 商品基本信息Id
+     * @return 商品销售数据集合
+     */
+    @GetMapping("spu/{spuId}")
+    @ApiOperation("查询spu的所有sku信息")
+    public ResponseVo<List<PmsSkuEntity>> queryInfo(
+            @PathVariable("spuId")Long  spuId
+    ){
+        List<PmsSkuEntity> pmsSkuEntityList = pmsSkuService.list(
+                new QueryWrapper<PmsSkuEntity>()
+                        .eq("spu_id",spuId)
+        );
+        return ResponseVo.ok(pmsSkuEntityList);
+    }
+
 
     /**
      * 列表

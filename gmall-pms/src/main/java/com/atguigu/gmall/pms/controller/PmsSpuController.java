@@ -19,6 +19,8 @@ import com.atguigu.gmall.common.bean.PageResultVo;
 import com.atguigu.gmall.common.bean.ResponseVo;
 import com.atguigu.gmall.common.bean.PageParamVo;
 
+import javax.ws.rs.Path;
+
 /**
  * spu信息
  *
@@ -28,11 +30,30 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "spu信息 管理")
 @RestController
-@RequestMapping("pms/pmsspu")
+@RequestMapping("pms/spu")
 public class PmsSpuController {
 
     @Autowired
     private PmsSpuService pmsSpuService;
+
+
+    /**
+     * 查询spu列表
+     * @param categoryId 类型ID
+     * @param pageParamVo 分页数据
+     * @return  分页数据，查询数据
+     */
+    @GetMapping("category/{categoryId}")
+    @ApiOperation("查询spu列表")
+    public ResponseVo<PageResultVo> querySpuInfo(
+            @PathVariable("categoryId") Long categoryId,
+            PageParamVo pageParamVo
+    ){
+        PageResultVo pageResultVo =this.pmsSpuService.querySpuInfo(categoryId,pageParamVo);
+        return ResponseVo.ok(pageResultVo);
+    }
+
+
 
     /**
      * 列表

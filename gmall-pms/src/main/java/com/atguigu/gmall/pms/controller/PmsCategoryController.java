@@ -1,6 +1,7 @@
 package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,11 +29,28 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "商品三级分类 管理")
 @RestController
-@RequestMapping("pms/pmscategory")
+@RequestMapping("pms/category")
 public class PmsCategoryController {
 
     @Autowired
     private PmsCategoryService pmsCategoryService;
+
+
+    /**
+     * 分类列表
+     * @param parentId 父节点Id -1:查询所有，0：查询一级节点
+     * @return  节点集合
+     */
+    @GetMapping("parent/{parentId}")
+    @ApiOperation("根据父节点Id查询分类")
+    public ResponseVo<List<PmsCategoryEntity>> queryCategory(
+            @PathVariable("parentId") Long parentId
+    ){
+        List<PmsCategoryEntity> pmsCategoryEntityList = this.pmsCategoryService.queryCategory(parentId);
+        return ResponseVo.ok(pmsCategoryEntityList);
+    }
+
+
 
     /**
      * 列表

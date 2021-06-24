@@ -2,6 +2,7 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,52 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "商品属性 管理")
 @RestController
-@RequestMapping("pms/pmsattr")
+@RequestMapping("pms/attr")
 public class PmsAttrController {
 
     @Autowired
     private PmsAttrService pmsAttrService;
+
+
+    /**
+     * 查询分类下的规格参数
+     * @param cid 分类Id
+     * @param type 是否基本属性
+     * @param searchType 是否搜索属性
+     * @return 销售属性集合
+     */
+    @GetMapping("category/{cid}")
+    @ApiOperation(" 查询分类下的规格参数")
+    public ResponseVo<List<PmsAttrEntity>> queryPmsAttrEntityByCid(
+            @PathVariable("cid")Long cid,
+            @RequestParam(value = "type",required = false)Integer type,
+            @RequestParam(value = "searchType",required = false)Integer searchType
+    ){
+        List<PmsAttrEntity> pmsAttrEntityList =this.pmsAttrService
+                .queryPmsAttrEntityByCid(cid,type,searchType);
+        return ResponseVo.ok(pmsAttrEntityList);
+    }
+
+
+
+    /**
+     * 查询规格参数
+     * @param gid   组Id
+     * @return  组参数集合
+     */
+    @GetMapping("group/{gid}")
+    @ApiOperation("查询组下的规格参数")
+    public ResponseVo<List<PmsAttrEntity>> queryPmsAttrEntityByGid(
+            @PathVariable("gid")Long gid
+    ){
+        List<PmsAttrEntity> pmsAttrEntityList = this.pmsAttrService.list(
+                new QueryWrapper<PmsAttrEntity>().eq("group_id",gid)
+        );
+        return ResponseVo.ok(pmsAttrEntityList);
+    }
+
+
+
 
     /**
      * 列表
