@@ -1,8 +1,21 @@
 package com.atguigu.gmall.pms.service.impl;
 
+import com.atguigu.gmall.pms.entity.PmsSpuAttrValueEntity;
+import com.atguigu.gmall.pms.entity.PmsSpuDescEntity;
+import com.atguigu.gmall.pms.mapper.PmsSpuAttrValueMapper;
+import com.atguigu.gmall.pms.mapper.PmsSpuDescMapper;
+import com.atguigu.gmall.pms.service.PmsSpuAttrValueService;
+import com.atguigu.gmall.pms.vo.PmsSpuVo;
+import com.atguigu.gmall.pms.vo.ProductAttrValueVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,10 +25,64 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.pms.mapper.PmsSpuMapper;
 import com.atguigu.gmall.pms.entity.PmsSpuEntity;
 import com.atguigu.gmall.pms.service.PmsSpuService;
+import org.springframework.util.CollectionUtils;
+
+import javax.xml.crypto.Data;
 
 
 @Service("pmsSpuService")
 public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> implements PmsSpuService {
+
+    @Autowired
+    private PmsSpuDescMapper pmsSpuDescMapper;
+
+    @Autowired
+    private PmsSpuAttrValueService pmsSpuAttrValueService;
+
+    @Override
+    public void bigSave(PmsSpuVo pmsSpuVo) {
+
+        //保存关于spu的数据
+            //1，保存spu的基本信息
+                //是否发布（默认为发布）
+                pmsSpuVo.setPublishStatus(1);
+                //创建时间
+                pmsSpuVo.setCreateTime(new Date());
+                //修改时间（因为要保证修改该时间和创建时间相同 上面已经设置修改该时间 此处直接.就可以）
+                pmsSpuVo.setUpdateTime(pmsSpuVo.getCreateTime());
+                //将数据按名称保存到数据库
+                this.save(pmsSpuVo);
+                //获取保存后返回的ID
+                Long spuId = pmsSpuVo.getId();
+            //2，保存spu的描述信息
+                //new新对象
+                PmsSpuDescEntity pmsSpuDescEntity =new PmsSpuDescEntity();
+                //因为此表的Id并非自增保存 所以需要手动设置 实体类中也要修改主键类型
+                pmsSpuDescEntity.setSpuId(spuId);
+                //保存图片地址 并用,分开
+                if (!CollectionUtils.isEmpty(pmsSpuVo.getSpuImages())){
+                    pmsSpuDescEntity.setDecript(StringUtils.join(pmsSpuVo.getSpuImages(),","));
+                }
+                //保存对象
+                this.pmsSpuDescMapper.insert(pmsSpuDescEntity);
+            //3. 保存spu的规格参数信息
+                List<ProductAttrValueVo> baseAttrs = pmsSpuVo.getBaseAttrs();
+                if (!CollectionUtils.isEmpty(baseAttrs)){
+                    List<PmsSpuAttrValueEntity> pmsSpuAttrValueEntities=
+                            baseAttrs.stream()
+                                    .filter(productAttrValueVo -> productAttrValueVo.getAttrValue() != null)
+                                    .map(productAttrValueVo -> {
+                                    productAttrValueVo.setSpuId(spuId);
+                                    productAttrValueVo.setSort(0);
+                                    return productAttrValueVo;
+                            }).collect(Collectors.toList());
+                    //因为是保存数组 所以此处装配PmsSpuAttrValueService
+                    this.pmsSpuAttrValueService.saveBatch(pmsSpuAttrValueEntities);
+                }
+
+
+    }
+
 
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
@@ -46,5 +113,7 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
         return new PageResultVo(page);
 //        return new PageResultVo(this.page(pageParamVo.getPage(),queryWrapper));
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.atguigu.gmall.pms.service;
 
+import com.atguigu.gmall.pms.vo.PmsSpuVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gmall.common.bean.PageResultVo;
 import com.atguigu.gmall.common.bean.PageParamVo;
@@ -19,5 +20,7 @@ public interface PmsSpuService extends IService<PmsSpuEntity> {
     PageResultVo queryPage(PageParamVo paramVo);
 
     PageResultVo querySpuInfo(Long categoryId, PageParamVo pageParamVo);
+
+    void bigSave(PmsSpuVo pmsSpuVo);
 }
 

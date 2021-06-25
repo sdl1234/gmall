@@ -1,15 +1,15 @@
 package com.atguigu.gmall.pms.vo;
 
+import com.atguigu.gmall.pms.entity.PmsSpuEntity;
 import lombok.Data;
 
 import java.util.List;
-
 @Data
-public class PmsSpuVo {
+public class PmsSpuVo extends PmsSpuEntity {
 
-    private List<> baseAttrs;
-    private List<> skus;
-    private List<> spuImages;
+    private List<ProductAttrValueVo> baseAttrs;
+    private List<PmsSkuVo> skus;
+    private List<String> spuImages;
 
 
 }

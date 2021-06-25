@@ -2,6 +2,7 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.atguigu.gmall.pms.vo.PmsSpuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,8 +84,8 @@ public class PmsSpuController {
      */
     @PostMapping
     @ApiOperation("保存")
-    public ResponseVo<Object> save(@RequestBody PmsSpuEntity pmsSpu){
-		pmsSpuService.save(pmsSpu);
+    public ResponseVo<Object> save(@RequestBody PmsSpuVo pmsSpuVo){
+		pmsSpuService.bigSave(pmsSpuVo);
 
         return ResponseVo.ok();
     }
