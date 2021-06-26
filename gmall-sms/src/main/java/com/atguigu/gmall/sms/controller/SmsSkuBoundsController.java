@@ -2,6 +2,7 @@ package com.atguigu.gmall.sms.controller;
 
 import java.util.List;
 
+import com.atguigu.gmall.sms.vo.SmsSkuSaleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,23 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "商品spu积分设置 管理")
 @RestController
-@RequestMapping("sms/smsskubounds")
+@RequestMapping("sms/skubounds")
 public class SmsSkuBoundsController {
 
     @Autowired
     private SmsSkuBoundsService smsSkuBoundsService;
+
+
+
+    @PostMapping("/skusale/save")
+    @ApiOperation("保存")
+    public ResponseVo<Object> saveSkuSaleInfo(@RequestBody SmsSkuSaleVo smsSkuSaleVo){
+        smsSkuBoundsService.saveSkuSaleInfo(smsSkuSaleVo);
+
+        return ResponseVo.ok(null);
+    }
+
+
 
     /**
      * 列表

@@ -1,19 +1,20 @@
 package com.atguigu.gmall.pms.service.impl;
 
-import com.atguigu.gmall.pms.entity.PmsSpuAttrValueEntity;
-import com.atguigu.gmall.pms.entity.PmsSpuDescEntity;
-import com.atguigu.gmall.pms.mapper.PmsSpuAttrValueMapper;
-import com.atguigu.gmall.pms.mapper.PmsSpuDescMapper;
-import com.atguigu.gmall.pms.service.PmsSpuAttrValueService;
+import com.atguigu.gmall.pms.entity.*;
+import com.atguigu.gmall.pms.feign.GmallSmsClient;
+import com.atguigu.gmall.pms.mapper.*;
+import com.atguigu.gmall.pms.service.*;
+import com.atguigu.gmall.pms.vo.PmsSkuVo;
 import com.atguigu.gmall.pms.vo.PmsSpuVo;
 import com.atguigu.gmall.pms.vo.ProductAttrValueVo;
+import com.atguigu.gmall.sms.vo.SmsSkuSaleVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -22,12 +23,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.gmall.common.bean.PageResultVo;
 import com.atguigu.gmall.common.bean.PageParamVo;
 
-import com.atguigu.gmall.pms.mapper.PmsSpuMapper;
-import com.atguigu.gmall.pms.entity.PmsSpuEntity;
-import com.atguigu.gmall.pms.service.PmsSpuService;
 import org.springframework.util.CollectionUtils;
-
-import javax.xml.crypto.Data;
 
 
 @Service("pmsSpuService")
@@ -38,6 +34,18 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
 
     @Autowired
     private PmsSpuAttrValueService pmsSpuAttrValueService;
+
+    @Autowired
+    private PmsSkuMapper pmsSkuMapper;
+
+    @Autowired
+    private PmsSkuImagesService pmsSkuImagesService;
+
+    @Autowired
+    private PmsSkuAttrValueService pmsSkuAttrValueService;
+
+    @Autowired
+    private GmallSmsClient gmallSmsClient;
 
     @Override
     public void bigSave(PmsSpuVo pmsSpuVo) {
@@ -79,6 +87,62 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
                     //因为是保存数组 所以此处装配PmsSpuAttrValueService
                     this.pmsSpuAttrValueService.saveBatch(pmsSpuAttrValueEntities);
                 }
+        //保存关于sku的数据
+            //1.保存sku基本信息
+                //判断sku是否为空
+                List<PmsSkuVo> pmsSkuVos =pmsSpuVo.getSkus();
+                if (CollectionUtils.isEmpty(pmsSkuVos)){
+                    return;
+                }
+                //遍历并且保存sku的基本信息
+                pmsSkuVos.forEach(pmsSkuVo ->{
+                    //保存基本信息
+                    PmsSkuEntity pmsSkuEntity =new PmsSkuVo();
+                    BeanUtils.copyProperties(pmsSkuVo,pmsSkuEntity);
+                    //保存分类和品牌信息
+                    pmsSkuEntity.setCategoryId(pmsSpuVo.getCategoryId());
+                    pmsSkuEntity.setBrandId(pmsSpuVo.getBrandId());
+                    //保存默认图片
+                    List<String> images =pmsSkuVo.getImages();
+                    if (!CollectionUtils.isEmpty(images)){
+                        pmsSkuEntity.setDefaultImage(pmsSkuEntity.getDefaultImage() == null ?
+                                images.get(0) : pmsSkuEntity.getDefaultImage()
+                                );
+                    }
+                    pmsSkuEntity.setSpuId(spuId);
+                    this.pmsSkuMapper.insert(pmsSkuEntity);
+
+                    //获取保存后的skuId
+                    Long skuId = pmsSkuEntity.getId();
+                //2.保存图片
+                    if (!CollectionUtils.isEmpty(images)) {
+                        String defaultImage = images.get(0);
+                        List<PmsSkuImagesEntity> skuImages = images.stream().map(image -> {
+                            PmsSkuImagesEntity pmsSkuImagesEntity =new PmsSkuImagesEntity();
+                            pmsSkuImagesEntity.setSkuId(skuId);
+                            pmsSkuImagesEntity.setUrl(image);
+                            pmsSkuImagesEntity.setSort(0);
+                            pmsSkuImagesEntity.setDefaultStatus(
+                                    StringUtils.equals(defaultImage,image) ? 1 : 0);
+                            return pmsSkuImagesEntity;
+                        }).collect(Collectors.toList());
+                        this. pmsSkuImagesService.saveBatch(skuImages);
+                    }
+                // 3.保存销售信息
+                    List<PmsSkuAttrValueEntity> saleAttrs = pmsSkuVo.getSaleAttrs();
+                    saleAttrs.forEach(saleAttr -> {
+                        saleAttr.setSort(0);
+                        saleAttr.setSkuId(skuId);
+                    });
+                    this.pmsSkuAttrValueService.saveBatch(saleAttrs);
+
+           //保存营销信息
+
+                    SmsSkuSaleVo smsSkuSaleVo =new SmsSkuSaleVo();
+                    BeanUtils.copyProperties(pmsSkuVo,smsSkuSaleVo);
+                    smsSkuSaleVo.setSkuId(skuId);
+                    this.gmallSmsClient.saveSkuSaleInfo(smsSkuSaleVo);
+                } );
 
 
     }

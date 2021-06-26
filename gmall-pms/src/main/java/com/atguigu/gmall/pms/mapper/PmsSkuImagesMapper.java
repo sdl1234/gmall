@@ -3,6 +3,7 @@ package com.atguigu.gmall.pms.mapper;
 import com.atguigu.gmall.pms.entity.PmsSkuImagesEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * sku图片

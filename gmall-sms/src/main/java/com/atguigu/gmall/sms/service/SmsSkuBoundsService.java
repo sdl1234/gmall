@@ -1,5 +1,6 @@
 package com.atguigu.gmall.sms.service;
 
+import com.atguigu.gmall.sms.vo.SmsSkuSaleVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.gmall.common.bean.PageResultVo;
 import com.atguigu.gmall.common.bean.PageParamVo;
@@ -17,5 +18,8 @@ import java.util.Map;
 public interface SmsSkuBoundsService extends IService<SmsSkuBoundsEntity> {
 
     PageResultVo queryPage(PageParamVo paramVo);
+
+
+    void saveSkuSaleInfo(SmsSkuSaleVo smsSkuSaleVo);
 }
 

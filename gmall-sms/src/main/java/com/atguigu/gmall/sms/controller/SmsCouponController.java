@@ -28,7 +28,7 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "优惠券信息 管理")
 @RestController
-@RequestMapping("sms/smscoupon")
+@RequestMapping("sms/coupon")
 public class SmsCouponController {
 
     @Autowired
