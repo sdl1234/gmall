@@ -11,11 +11,13 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.pms.mapper.PmsSkuMapper;
 import com.atguigu.gmall.pms.entity.PmsSkuEntity;
 import com.atguigu.gmall.pms.service.PmsSkuService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("pmsSkuService")
 public class PmsSkuServiceImpl extends ServiceImpl<PmsSkuMapper, PmsSkuEntity> implements PmsSkuService {
 
+    @Transactional
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
         IPage<PmsSkuEntity> page = this.page(

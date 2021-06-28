@@ -11,11 +11,13 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.sms.mapper.SmsSkuLadderMapper;
 import com.atguigu.gmall.sms.entity.SmsSkuLadderEntity;
 import com.atguigu.gmall.sms.service.SmsSkuLadderService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("smsSkuLadderService")
 public class SmsSkuLadderServiceImpl extends ServiceImpl<SmsSkuLadderMapper, SmsSkuLadderEntity> implements SmsSkuLadderService {
 
+    @Transactional
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
         IPage<SmsSkuLadderEntity> page = this.page(

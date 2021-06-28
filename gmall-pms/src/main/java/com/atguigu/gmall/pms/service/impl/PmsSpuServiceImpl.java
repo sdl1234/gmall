@@ -8,6 +8,7 @@ import com.atguigu.gmall.pms.vo.PmsSkuVo;
 import com.atguigu.gmall.pms.vo.PmsSpuVo;
 import com.atguigu.gmall.pms.vo.ProductAttrValueVo;
 import com.atguigu.gmall.sms.vo.SmsSkuSaleVo;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
     @Autowired
     private GmallSmsClient gmallSmsClient;
 
+    @GlobalTransactional
     @Override
     public void bigSave(PmsSpuVo pmsSpuVo) {
 
@@ -144,6 +146,7 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
                     this.gmallSmsClient.saveSkuSaleInfo(smsSkuSaleVo);
                 } );
 
+//                int i = 1 / 0;
 
     }
 

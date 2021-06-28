@@ -11,11 +11,13 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.sms.mapper.SmsSkuFullReductionMapper;
 import com.atguigu.gmall.sms.entity.SmsSkuFullReductionEntity;
 import com.atguigu.gmall.sms.service.SmsSkuFullReductionService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("smsSkuFullReductionService")
 public class SmsSkuFullReductionServiceImpl extends ServiceImpl<SmsSkuFullReductionMapper, SmsSkuFullReductionEntity> implements SmsSkuFullReductionService {
 
+    @Transactional
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
         IPage<SmsSkuFullReductionEntity> page = this.page(

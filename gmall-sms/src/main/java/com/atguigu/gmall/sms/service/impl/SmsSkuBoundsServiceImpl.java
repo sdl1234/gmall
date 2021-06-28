@@ -23,6 +23,7 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.sms.mapper.SmsSkuBoundsMapper;
 import com.atguigu.gmall.sms.entity.SmsSkuBoundsEntity;
 import com.atguigu.gmall.sms.service.SmsSkuBoundsService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 
@@ -35,6 +36,7 @@ public class SmsSkuBoundsServiceImpl extends ServiceImpl<SmsSkuBoundsMapper, Sms
     @Autowired
     private SmsSkuLadderMapper smsSkuLadderMapper;
 
+    @Transactional
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
         IPage<SmsSkuBoundsEntity> page = this.page(
@@ -45,6 +47,7 @@ public class SmsSkuBoundsServiceImpl extends ServiceImpl<SmsSkuBoundsMapper, Sms
         return new PageResultVo(page);
     }
 
+    @Transactional
     @Override
     public void saveSkuSaleInfo(SmsSkuSaleVo smsSkuSaleVo) {
         //积分
