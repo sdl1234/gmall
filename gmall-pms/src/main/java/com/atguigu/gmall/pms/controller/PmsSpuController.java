@@ -39,6 +39,21 @@ public class PmsSpuController {
 
 
     /**
+     * 分页查询已上架的spu
+     * @param pageParamVo 分页条件
+     * @return
+     */
+    @PostMapping("page")
+    public ResponseVo<List<PmsSpuEntity>> querySpusByPage(
+            @RequestBody PageParamVo pageParamVo)
+    {
+        PageResultVo page = pmsSpuService.queryPage(pageParamVo);
+        List<PmsSpuEntity> list = (List<PmsSpuEntity>) page.getList();
+        return ResponseVo.ok(list);
+    }
+
+
+    /**
      * 查询spu列表
      * @param categoryId 类型ID
      * @param pageParamVo 分页数据

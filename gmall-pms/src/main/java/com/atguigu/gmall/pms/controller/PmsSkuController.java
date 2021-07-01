@@ -2,6 +2,8 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.atguigu.gmall.pms.entity.PmsSkuAttrValueEntity;
+import com.atguigu.gmall.pms.service.PmsSkuAttrValueService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +36,8 @@ public class PmsSkuController {
 
     @Autowired
     private PmsSkuService pmsSkuService;
+
+
 
 
     /**

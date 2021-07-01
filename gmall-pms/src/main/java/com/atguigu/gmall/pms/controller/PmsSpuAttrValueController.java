@@ -28,11 +28,29 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "spu属性值 管理")
 @RestController
-@RequestMapping("pms/pmsspuattrvalue")
+@RequestMapping("pms/spuattrvalue")
 public class PmsSpuAttrValueController {
 
     @Autowired
     private PmsSpuAttrValueService pmsSpuAttrValueService;
+
+
+    /**
+     * 根据spuId查询检索属性及值
+     * @param spuId 商品基本信息Id
+     * @return
+     */
+    @ApiOperation("根据spuId查询检索属性及值")
+    @GetMapping("spu/{spuId}")
+    public ResponseVo<List<PmsSpuAttrValueEntity>> querySearchAttrValueBySpuId(
+            @PathVariable("spuId")Long spuId
+            ){
+        List<PmsSpuAttrValueEntity> attrValueEntities = pmsSpuAttrValueService.querySearchAttrValueBySpuId(spuId);
+        return ResponseVo.ok(attrValueEntities);
+    }
+
+
+
 
     /**
      * 列表

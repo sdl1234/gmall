@@ -28,7 +28,7 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "sku图片 管理")
 @RestController
-@RequestMapping("pms/pmsskuimages")
+@RequestMapping("pms/skuimages")
 public class PmsSkuImagesController {
 
     @Autowired

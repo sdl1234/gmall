@@ -2,47 +2,51 @@ package com.atguigu.gmall.pms.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
- * spu属性值
+ * spu信息
  * 
  * @author sdl
  * @email sdl@atguigu.com
  * @date 2021-06-22 17:49:44
  */
 @Data
-@TableName("pms_spu_attr_value")
-public class PmsSpuAttrValueEntity implements Serializable {
+@TableName("pms_spu")
+public class PmsSpuEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * id
+	 * 商品id
 	 */
 	@TableId
 	private Long id;
 	/**
-	 * 商品id
+	 * 商品名称
 	 */
-	private Long spuId;
+	private String name;
 	/**
-	 * 属性id
+	 * 所属分类id
 	 */
-	private Long attrId;
+	private Long categoryId;
 	/**
-	 * 属性名
+	 * 品牌id
 	 */
-	private String attrName;
+	private Long brandId;
 	/**
-	 * 属性值
+	 * 上架状态[0 - 下架，1 - 上架]
 	 */
-	private String attrValue;
+	private Integer publishStatus;
 	/**
-	 * 顺序
+	 * 创建时间
 	 */
-	private Integer sort;
+	private Date createTime;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
 
 }

@@ -28,11 +28,30 @@ import com.atguigu.gmall.common.bean.PageParamVo;
  */
 @Api(tags = "sku销售属性&值 管理")
 @RestController
-@RequestMapping("pms/pmsskuattrvalue")
+@RequestMapping("pms/skuattrvalue")
 public class PmsSkuAttrValueController {
 
     @Autowired
     private PmsSkuAttrValueService pmsSkuAttrValueService;
+
+
+
+    /**
+     * 根据skuId查询检索属性及值
+     * @param skuId 商品销售属性Id
+     * @return
+     */
+    @ApiOperation("根据skuId查询检索属性及值")
+    @GetMapping("sku/{skuId}")
+    public ResponseVo<List<PmsSkuAttrValueEntity>> querySearchAttrValueBySkuId(
+            @PathVariable("skuId")Long skuId
+    ){
+        List<PmsSkuAttrValueEntity> attrValueEntities=
+                pmsSkuAttrValueService.querySearchAttrValueBySkuId(skuId);
+        return ResponseVo.ok(attrValueEntities);
+    }
+
+
 
     /**
      * 列表

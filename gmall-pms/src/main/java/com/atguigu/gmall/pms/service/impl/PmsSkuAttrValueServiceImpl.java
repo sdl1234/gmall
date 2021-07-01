@@ -1,6 +1,9 @@
 package com.atguigu.gmall.pms.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,6 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("pmsSkuAttrValueService")
 public class PmsSkuAttrValueServiceImpl extends ServiceImpl<PmsSkuAttrValueMapper, PmsSkuAttrValueEntity> implements PmsSkuAttrValueService {
 
+
+    @Autowired
+    private PmsSkuAttrValueMapper pmsSkuAttrValueMapper;
+
+
     @Transactional
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
@@ -26,6 +34,12 @@ public class PmsSkuAttrValueServiceImpl extends ServiceImpl<PmsSkuAttrValueMappe
         );
 
         return new PageResultVo(page);
+    }
+
+    @Override
+    public List<PmsSkuAttrValueEntity> querySearchAttrValueBySkuId(Long skuId) {
+
+        return this.pmsSkuAttrValueMapper.querySearchAttrValueBySkuId(skuId);
     }
 
 }
