@@ -109,6 +109,7 @@ class GmallSearchApplicationTests {
                         if (brandEntity != null){
                             goods.setBrandId(pmsSkuEntity.getBrandId());
                             goods.setBrandName(pmsSkuEntity.getName());
+                            goods.setLogo(brandEntity.getLogo());
                         }
 
                         //查询分类
@@ -122,6 +123,7 @@ class GmallSearchApplicationTests {
 
                         goods.setCreatTime(pmsSpuEntity.getCreateTime());
                         goods.setDefaultImage(pmsSkuEntity.getDefaultImage());
+                        goods.setSubTitle(pmsSkuEntity.getSubtitle());
                         goods.setPrice(pmsSkuEntity.getPrice().doubleValue());
                         goods.setSales(0L);
                         goods.setSkuId(pmsSkuEntity.getId());
