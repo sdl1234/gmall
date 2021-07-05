@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.nacos.discovery.group",
+      "type": "java.lang.String",
+      "description": "Description for spring.cloud.nacos.discovery.group."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.file-extension",
+      "type": "java.lang.String",
+      "description": "Description for spring.cloud.nacos.discovery.file-extension."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.group",
+      "type": "java.lang.String",
+      "description": "Description for spring.cloud.nacos.discovery.group."
+    }
+  ] }

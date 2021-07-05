@@ -13,6 +13,8 @@ import java.util.List;
  *  搜索-》小米-》品牌 1，3-》分类 225 -》机身存储 高通-麒麟-》
  *  cpu品牌 晓龙865-硅谷1000-》排序 1 -》价格区间 1000-6000 -》
  *  分页 1 -》是否有库存 true
+ *
+ *  search?keyword=手机&brandId=1,3&cid=225&props=6:高通-麒麟&sort=1&priceFrom=1000&priceTo=6000&pageNum=1&store=true
  */
 
 

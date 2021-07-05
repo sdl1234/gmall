@@ -3,6 +3,8 @@ spring:
     name: search-service
   cloud:
     nacos:
-      discovery:
+      config:
         server-addr:  127.0.0.1:8848
-
+        namespace: d254689c-66a3-4649-b8d7-cf3777a57509
+        group: dev
+        file-extension: yml
