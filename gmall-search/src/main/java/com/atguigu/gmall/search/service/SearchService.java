@@ -22,6 +22,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
@@ -31,13 +32,13 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,7 +53,7 @@ public class SearchService {
 
         try {
             SearchRequest searchRequest =new SearchRequest(
-                    new String[]{"goods"},this.buildDsl(paramVo));
+                    new String[]{"goods"}, Objects.requireNonNull(buildDsl(paramVo)));
             SearchResponse searchResponse = this.restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
              SearchResponseVo responseVo = this.parseResult(searchResponse);
              responseVo.setPageNum(paramVo.getPageNum());
@@ -140,13 +141,15 @@ public class SearchService {
         if (!CollectionUtils.isEmpty(attrIdAggBuckets)){
             List<SearchResponseAttrVo> filters = attrIdAggBuckets.stream().map(bucket ->{
                 SearchResponseAttrVo responseAttrVo =new SearchResponseAttrVo();
-                //规格阐参数id
+                //规格参数id
                 responseAttrVo.setAttrId(((Terms.Bucket) bucket).getKeyAsNumber().longValue());
+
+                Aggregations aggs = ((Terms.Bucket) bucket).getAggregations();
                 //规格参数的名称
-                ParsedStringTerms attrNameAgg = (ParsedStringTerms)((Terms.Bucket) bucket).getAggregations().get("attrNameAgg");
+                ParsedStringTerms attrNameAgg = aggs.get("attrNameAgg");
                 responseAttrVo.setAttrName(attrNameAgg.getBuckets().get(0).getKeyAsString());
                 //规格参数值
-                ParsedStringTerms attrValueAgg = (ParsedStringTerms)((Terms.Bucket) bucket).getAggregations().get("attrValueAgg");
+                ParsedStringTerms attrValueAgg = aggs.get("attrValueAgg");
                 List<? extends Terms.Bucket> attrValueAggBuckets = attrValueAgg.getBuckets();
                 if (!CollectionUtils.isEmpty(attrValueAggBuckets)){
                     List<String> attrValues =attrValueAggBuckets.stream().map(Terms.Bucket::getKeyAsString).collect(Collectors.toList());
@@ -166,7 +169,7 @@ public class SearchService {
         SearchSourceBuilder searchSourceBuilder=new SearchSourceBuilder();
 
         String keyword = paramVo.getKeyword();
-        if (StringUtils.isEmpty(keyword)){
+        if (StringUtils.isBlank(keyword)){
             //TODO:广告
             return null;
         }
@@ -182,14 +185,14 @@ public class SearchService {
                 List<Long> brandId = paramVo.getBrandId();
                 if (!CollectionUtils.isEmpty(brandId)){
                     //过滤
-                    boolQueryBuilder.filter(QueryBuilders.termQuery(
+                    boolQueryBuilder.filter(QueryBuilders.termsQuery(
                             "brandId",brandId));
                 }
 
                 //1.2.2 分类过滤
-                Long cid = paramVo.getCid();
+                List<Long> cid = paramVo.getCid();
                 if (cid != null){
-                    boolQueryBuilder.filter(QueryBuilders.termQuery(
+                    boolQueryBuilder.filter(QueryBuilders.termsQuery(
                             "categoryId",cid));
                 }
 
@@ -271,12 +274,10 @@ public class SearchService {
         //5.聚合
             //5.1 品牌聚合
             searchSourceBuilder.aggregation(
-                    AggregationBuilders.terms("brandIdAgg")
-                            .field("brandId")
-                    .subAggregation(AggregationBuilders.terms("brandNameAgg")
-                            .field("brandName"))
-                            .subAggregation(AggregationBuilders.terms("logoAgg")
-                            .field("logo")));
+                    AggregationBuilders.terms("brandIdAgg").field("brandId")
+                    .subAggregation(AggregationBuilders.terms("brandNameAgg").field("brandName"))
+                    .subAggregation(AggregationBuilders.terms("logoAgg").field("logo"))
+            );
 
             //5.2 分类聚合
             searchSourceBuilder.aggregation(AggregationBuilders.terms("categoryIdAgg")
@@ -294,9 +295,9 @@ public class SearchService {
             .subAggregation(AggregationBuilders.terms("attrValueAgg")
                     .field("searchAttrs.attrValue"))));
 
-        //6. 结果集过滤
+        //6. 结果集过滤(添加的为保存的字符！！！！！！！！！！！！！！！)
         searchSourceBuilder.fetchSource(new String[]{
-                "skuId","title","price","defaultImage"
+                "skuId","title","price","defaultImage","subTitle"
         },null);
 
         System.out.println(searchSourceBuilder.toString());

@@ -8,11 +8,13 @@ import com.atguigu.gmall.search.fegin.GmallPmsClient;
 import com.atguigu.gmall.search.fegin.GmallWmsClient;
 import com.atguigu.gmall.search.pojo.Goods;
 import com.atguigu.gmall.search.pojo.SearchAttrValue;
+import com.atguigu.gmall.search.pojo.SearchResponseAttrVo;
 import com.atguigu.gmall.search.repository.GoodsRepository;
 import com.atguigu.gmall.wms.api.GmallWmsApi;
 import com.atguigu.gmall.wms.entity.WmsWareSkuEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -59,7 +61,7 @@ class GmallSearchApplicationTests {
             List<PmsSpuEntity> spus = spuResp.getData();
 
             //遍历spu 查询sku
-            for (PmsSpuEntity pmsSpuEntity : spus) {
+            spus.forEach(pmsSpuEntity -> {
                 ResponseVo<List<PmsSkuEntity>> skuResp = this.pmsClient.queryInfo(pmsSpuEntity.getId());
                 List<PmsSkuEntity> skuEntities = skuResp.getData();
 
@@ -69,9 +71,9 @@ class GmallSearchApplicationTests {
                         Goods goods = new Goods();
 
                         //获取spu的索引属性及值
-                        ResponseVo<List<PmsSpuAttrValueEntity>> arrtValueResp =
+                        ResponseVo<List<PmsSpuAttrValueEntity>> attrValueResp =
                                 this.pmsClient.querySearchAttrValueBySpuId(pmsSpuEntity.getId());
-                        List<PmsSpuAttrValueEntity> attrValueEntities = arrtValueResp.getData();
+                        List<PmsSpuAttrValueEntity> attrValueEntities = attrValueResp.getData();
 
                         List<SearchAttrValue> searchAttrValues =new ArrayList<>();
 
@@ -104,29 +106,30 @@ class GmallSearchApplicationTests {
 
                         //查询品牌
                         ResponseVo<PmsBrandEntity> brandEntityResp=
-                                this.pmsClient.queryPmsBrandById(pmsSkuEntity.getId());
+                                this.pmsClient.queryPmsBrandById(pmsSkuEntity.getBrandId());
                         PmsBrandEntity brandEntity = brandEntityResp.getData();
                         if (brandEntity != null){
-                            goods.setBrandId(pmsSkuEntity.getBrandId());
-                            goods.setBrandName(pmsSkuEntity.getName());
+                            goods.setBrandId(brandEntity.getId());
+                            goods.setBrandName(brandEntity.getName());
                             goods.setLogo(brandEntity.getLogo());
                         }
 
                         //查询分类
                         ResponseVo<PmsCategoryEntity> categoryEntityResp =
-                                this.pmsClient.queryPmsCategoryById(pmsSkuEntity.getId());
+                                this.pmsClient.queryPmsCategoryById(pmsSkuEntity.getCategoryId());
                         PmsCategoryEntity categoryEntity = categoryEntityResp.getData();
                         if (categoryEntity != null){
-                            goods.setCategoryId(pmsSkuEntity.getCategoryId());
+                            goods.setCategoryId(categoryEntity.getId());
                             goods.setCategoryName(categoryEntity.getName());
                         }
 
-                        goods.setCreatTime(pmsSpuEntity.getCreateTime());
+                        goods.setCreateTime(pmsSpuEntity.getCreateTime());
                         goods.setDefaultImage(pmsSkuEntity.getDefaultImage());
                         goods.setSubTitle(pmsSkuEntity.getSubtitle());
                         goods.setPrice(pmsSkuEntity.getPrice().doubleValue());
                         goods.setSales(0L);
                         goods.setSkuId(pmsSkuEntity.getId());
+
 
                         //查询库存信息
                         ResponseVo<List<WmsWareSkuEntity>> listResp =
@@ -144,11 +147,12 @@ class GmallSearchApplicationTests {
                     //导入索引库
                     this.goodsRepository.saveAll(goodsList);
                 }
-            }
+            });
             pageSize =spus.size();
             pageNum++;
 
         }while (pageSize == 100);
+
 
 
 

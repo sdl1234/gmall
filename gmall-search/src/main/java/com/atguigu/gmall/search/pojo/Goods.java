@@ -37,7 +37,7 @@ public class Goods {
      * 新品 根据创建的时间进行排序
      */
     @Field(type = FieldType.Date)
-    private Date creatTime;
+    private Date createTime;
 
     /**
      * 是否有货 给默认值为 false 查询数据库后可以进行修改
@@ -63,4 +63,6 @@ public class Goods {
      */
     @Field(type = FieldType.Nested)
     private List<SearchAttrValue> searchAttrs;
+
+
 }

@@ -28,7 +28,7 @@ public class SearchParamVo {
     private List<Long> brandId;
 
     //分类
-    private Long cid;
+    private List<Long> cid;
 
     //查询参数
     private List<String> props;
