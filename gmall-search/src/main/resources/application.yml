@@ -27,6 +27,17 @@ spring:
     default-property-inclusion: non_null
   thymeleaf:
     cache: false
+  rabbitmq:
+    host: 192.168.146.128
+    port: 5672
+    virtual-host: /admin
+    username: admin
+    password: admin
+    listener:
+      simple:
+        prefetch: 1
+        concurrency: 4
+        acknowledge-mode: manual
 feign:
   sentinel:
     enabled: true

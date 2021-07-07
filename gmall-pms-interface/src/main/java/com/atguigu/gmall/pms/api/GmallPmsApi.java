@@ -13,6 +13,14 @@ import java.util.List;
 
 public interface GmallPmsApi {
 
+
+    /**
+     * 信息
+     */
+    @GetMapping("pms/spu/{id}")
+    public ResponseVo<PmsSpuEntity> queryPmsSpuById(@PathVariable("id") Long id);
+
+
     /**
      * 分页查询已上架的spu
      * @param pageParamVo 分页条件

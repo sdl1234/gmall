@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class GmallSearchApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(GmallSearchApplication.class, args);
     }
 

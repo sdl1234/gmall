@@ -10,6 +10,7 @@ import com.atguigu.gmall.pms.vo.ProductAttrValueVo;
 import com.atguigu.gmall.sms.vo.SmsSkuSaleVo;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,9 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
 
     @Autowired
     private GmallSmsClient gmallSmsClient;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @GlobalTransactional
     @Override
@@ -147,6 +151,9 @@ public class PmsSpuServiceImpl extends ServiceImpl<PmsSpuMapper, PmsSpuEntity> i
                 } );
 
 //                int i = 1 / 0;
+
+        this.rabbitTemplate.convertAndSend("PMS_ITEM_EXCHANGE","item.insert",spuId);
+
 
     }
 
