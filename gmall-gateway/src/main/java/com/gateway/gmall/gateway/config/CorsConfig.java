@@ -18,6 +18,7 @@ public class CorsConfig {
         //允许的域
         config.addAllowedOrigin("http://manager.gmall.com");
             config.addAllowedOrigin("http://www.gmall.com");
+            config.addAllowedOrigin("http://gmall.com");
             //允许的头信息 全部
             config.addAllowedHeader("*");
             //允许的方法 全部

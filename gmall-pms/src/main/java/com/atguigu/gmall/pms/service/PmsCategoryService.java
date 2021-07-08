@@ -20,5 +20,7 @@ public interface PmsCategoryService extends IService<PmsCategoryEntity> {
     PageResultVo queryPage(PageParamVo paramVo);
 
     List<PmsCategoryEntity> queryCategory(Long parentId);
+
+    List<PmsCategoryEntity> queryLv2WithSubsByPid(Long pid);
 }
 

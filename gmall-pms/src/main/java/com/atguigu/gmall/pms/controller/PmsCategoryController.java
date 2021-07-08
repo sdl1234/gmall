@@ -36,6 +36,14 @@ public class PmsCategoryController {
     private PmsCategoryService pmsCategoryService;
 
 
+    @GetMapping("subs/{pid}")
+    public ResponseVo<List<PmsCategoryEntity>> queryLv2WithSubsByPid(@PathVariable("pid")Long pid){
+        List<PmsCategoryEntity> categoryEntities = this.pmsCategoryService.queryLv2WithSubsByPid(pid);
+        return ResponseVo.ok(categoryEntities);
+    }
+
+
+
     /**
      * 分类列表
      * @param parentId 父节点Id -1:查询所有，0：查询一级节点

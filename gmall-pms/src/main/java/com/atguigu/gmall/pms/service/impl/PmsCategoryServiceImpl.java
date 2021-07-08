@@ -43,4 +43,9 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryMapper, PmsCa
         return this.pmsCategoryMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<PmsCategoryEntity> queryLv2WithSubsByPid(Long pid) {
+        return this.pmsCategoryMapper.queryLv2WithSubsByPid(pid);
+    }
+
 }

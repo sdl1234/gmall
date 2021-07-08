@@ -15,6 +15,22 @@ public interface GmallPmsApi {
 
 
     /**
+     * 分类列表
+     * @param parentId 父节点Id -1:查询所有，0：查询一级节点
+     * @return  节点集合
+     */
+    @GetMapping("pms/category/parent/{parentId}")
+    public ResponseVo<List<PmsCategoryEntity>> queryCategory(
+            @PathVariable("parentId") Long parentId
+    );
+
+
+    @GetMapping("pms/category/subs/{pid}")
+    public ResponseVo<List<PmsCategoryEntity>> queryLv2WithSubsByPid(@PathVariable("pid")Long pid);
+
+
+
+    /**
      * 信息
      */
     @GetMapping("pms/spu/{id}")
