@@ -1,24 +1,16 @@
 package com.atguigu.gmall.pms.controller;
 
-import java.util.List;
-import java.util.Locale;
-
+import com.atguigu.gmall.common.bean.PageParamVo;
+import com.atguigu.gmall.common.bean.PageResultVo;
+import com.atguigu.gmall.common.bean.ResponseVo;
+import com.atguigu.gmall.pms.entity.PmsCategoryEntity;
+import com.atguigu.gmall.pms.service.PmsCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.atguigu.gmall.pms.entity.PmsCategoryEntity;
-import com.atguigu.gmall.pms.service.PmsCategoryService;
-import com.atguigu.gmall.common.bean.PageResultVo;
-import com.atguigu.gmall.common.bean.ResponseVo;
-import com.atguigu.gmall.common.bean.PageParamVo;
+import java.util.List;
 
 /**
  * 商品三级分类
@@ -34,6 +26,19 @@ public class PmsCategoryController {
 
     @Autowired
     private PmsCategoryService pmsCategoryService;
+
+
+    /**
+     * 根据三级分类Id查询123级分类
+     * @param cid
+     * @return
+     */
+    @GetMapping("sub/{cid3}")
+    public ResponseVo<List<PmsCategoryEntity>> queryLv1123CategoriesByCid(@PathVariable("cid3") Long cid){
+        List<PmsCategoryEntity> categoryEntities = this.pmsCategoryService.queryLv1123CategoriesByCid(cid);
+        return ResponseVo.ok(categoryEntities);
+    }
+
 
 
     @GetMapping("subs/{pid}")

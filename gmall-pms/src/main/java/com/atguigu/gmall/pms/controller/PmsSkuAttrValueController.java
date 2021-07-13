@@ -1,23 +1,18 @@
 package com.atguigu.gmall.pms.controller;
 
-import java.util.List;
-
+import com.atguigu.gmall.common.bean.PageParamVo;
+import com.atguigu.gmall.common.bean.PageResultVo;
+import com.atguigu.gmall.common.bean.ResponseVo;
+import com.atguigu.gmall.pms.entity.PmsSkuAttrValueEntity;
+import com.atguigu.gmall.pms.service.PmsSkuAttrValueService;
+import com.atguigu.gmall.pms.vo.SaleAttrValueVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.atguigu.gmall.pms.entity.PmsSkuAttrValueEntity;
-import com.atguigu.gmall.pms.service.PmsSkuAttrValueService;
-import com.atguigu.gmall.common.bean.PageResultVo;
-import com.atguigu.gmall.common.bean.ResponseVo;
-import com.atguigu.gmall.common.bean.PageParamVo;
+import java.util.List;
 
 /**
  * sku销售属性&值
@@ -33,6 +28,62 @@ public class PmsSkuAttrValueController {
 
     @Autowired
     private PmsSkuAttrValueService pmsSkuAttrValueService;
+
+
+    /**
+     * 根据分类id，skuId
+     * @param cid
+     * @param skuId
+     * @return
+     */
+    @GetMapping("search/{cid}")
+    public ResponseVo<List<PmsSkuAttrValueEntity>> querySearchAttrValuesBySkuId(
+            @PathVariable("cid")Long cid,
+            @RequestParam("skuId") Long skuId
+    ){
+         List<PmsSkuAttrValueEntity> skuAttrValueEntities =this.pmsSkuAttrValueService.querySearchAttrValuesBySkuId(cid,skuId);
+         return ResponseVo.ok(skuAttrValueEntities);
+    }
+
+
+
+    /**
+     * 根据spuId得到销售属性组合和skuId的映射关系
+     * @param spuId
+     * @return
+     */
+    @GetMapping("mapping/{spuId}")
+    public ResponseVo<String> queryMappingBySpuId(@PathVariable("spuId")Long spuId){
+         String json =this.pmsSkuAttrValueService.queryMappingBySpuId(spuId);
+        return ResponseVo.ok(json);
+    }
+
+
+
+    /**
+     * 根据skuId查询当前sku的销售属性
+     * @param skuId
+     * @return
+     */
+    @GetMapping("sku2/{skuId}")
+    public ResponseVo<List<PmsSkuAttrValueEntity>> querySkuAttrValuesBySkuId(@PathVariable("skuId")Long skuId){
+        List<PmsSkuAttrValueEntity> skuAttrValueEntities = this.pmsSkuAttrValueService.list(new QueryWrapper<PmsSkuAttrValueEntity>().eq("sku_id", skuId));
+        return ResponseVo.ok(skuAttrValueEntities);
+
+    }
+
+
+    /**
+     * 根据spuId查询spu下所有销售属性的可取值
+     * @param spuId
+     * @return
+     */
+    @GetMapping("spu/{spuId}")
+    public ResponseVo<List<SaleAttrValueVo>> querySaleAttrValuesBySpuId(@PathVariable("spuId")Long spuId){
+        List<SaleAttrValueVo> saleAttrValueVos =this.pmsSkuAttrValueService.querySaleAttrValuesBySpuId(spuId);
+        return ResponseVo.ok(saleAttrValueVos);
+    }
+
 
 
 

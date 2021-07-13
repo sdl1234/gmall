@@ -18,4 +18,15 @@
     </select>
 
 
+
+    <!--    List<Map<String, Object>> queryMappingBySpuId(List<Long> skuIds);-->
+    <select id="queryMappingBySpuId" resultType="java.util.Map">
+        SELECT GROUP_CONCAT(attr_value ORDER BY attr_id ASC) AS attr_values ,sku_id
+        FROM pms_sku_attr_value
+        WHERE sku_id IN
+            <foreach collection="skuIds" item="skuId" separator="," open="(" close=")">#{skuId}</foreach>
+        GROUP BY sku_id
+    </select>
+
+
 </mapper>

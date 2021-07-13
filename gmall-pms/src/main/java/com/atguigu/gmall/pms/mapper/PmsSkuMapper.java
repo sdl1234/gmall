@@ -15,5 +15,5 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface PmsSkuMapper extends BaseMapper<PmsSkuEntity> {
-	
+
 }

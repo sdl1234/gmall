@@ -3,7 +3,7 @@ package com.atguigu.gmall.index.sercive;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.common.bean.ResponseVo;
-import com.atguigu.gmall.index.config.RedissonConfig;
+import com.atguigu.gmall.index.config.GmallCache;
 import com.atguigu.gmall.index.fegin.GmallPmsClient;
 import com.atguigu.gmall.index.utils.DistributedLock;
 import com.atguigu.gmall.pms.entity.PmsCategoryEntity;
@@ -41,6 +41,8 @@ public class IndexService {
     private DistributedLock lock;
 
 
+
+
     public List<PmsCategoryEntity> queryLv1Categories() {
 
         ResponseVo<List<PmsCategoryEntity>> listResponseVo = this.pmsClient.queryCategory(0L);
@@ -48,7 +50,18 @@ public class IndexService {
         return listResponseVo.getData();
     }
 
-    public List<PmsCategoryEntity> queryLv2WithSubsById(Long pid) {
+
+    @GmallCache(prefix = KEY_PREFIX,timeout = 259200,random = 14400,lock = Lock_PREFIX)
+     public List<PmsCategoryEntity> queryLv2WithSubsById(Long pid) {
+
+            ResponseVo<List<PmsCategoryEntity>> listResponseVo =this.pmsClient.queryLv2WithSubsByPid(pid);
+            List<PmsCategoryEntity> categoryEntities = listResponseVo.getData();
+            return categoryEntities;
+    }
+
+
+
+    public List<PmsCategoryEntity> queryLv2WithSubsById2(Long pid) {
         //查询缓存
         String json = this.redisTemplate.opsForValue().get(KEY_PREFIX + pid);
         //判断是否为空 不为空则反序列化
@@ -89,8 +102,35 @@ public class IndexService {
 
 
 
-
     public void testLock() {
+        RLock lock = this.redissonClient.getLock("lock");
+        lock.lock();
+
+        try {
+            String numString = this.redisTemplate.opsForValue().get("num");
+            if (StringUtils.isBlank(numString)){
+                this.redisTemplate.opsForValue().set("num","1");
+            }
+            int num = Integer.parseInt(numString);
+            this.redisTemplate.opsForValue().set("num", String.valueOf(++num));
+
+
+            try {
+                TimeUnit.SECONDS.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            lock.unlock();
+        }
+
+
+    }
+
+
+
+
+    public void testLock4() {
         RLock lock = this.redissonClient.getLock("lock");
         lock.lock();
 
