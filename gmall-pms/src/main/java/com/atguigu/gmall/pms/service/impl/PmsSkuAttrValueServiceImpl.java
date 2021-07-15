@@ -66,7 +66,7 @@ public class PmsSkuAttrValueServiceImpl extends ServiceImpl<PmsSkuAttrValueMappe
         List<Long> skuIds = skuEntities.stream().map(PmsSkuEntity::getId).collect(Collectors.toList());
 
         //查询所有sku属性
-        List<PmsSkuAttrValueEntity> skuAttrValueEntities = this.list(new QueryWrapper<PmsSkuAttrValueEntity>().in("sku_id", skuIds).groupBy("attr_id"));
+        List<PmsSkuAttrValueEntity> skuAttrValueEntities = this.list(new QueryWrapper<PmsSkuAttrValueEntity>().in("sku_id", skuIds).orderByAsc("attr_id"));
         if (CollectionUtils.isEmpty(skuAttrValueEntities)){
             return  null;
         }

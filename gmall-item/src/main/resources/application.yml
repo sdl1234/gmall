@@ -29,3 +29,9 @@ feign:
 logging:
   level:
     com.atguigu.gmall: debug
+thread:
+  pool:
+    coreSize: 50
+    maxSize: 100
+    keepAlive: 60
+    blockingSize: 500
