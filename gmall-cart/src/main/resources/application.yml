@@ -1,6 +1,6 @@
 #端口号
 server:
-  port: 18089
+  port: 18090
 
 #nacos地址
 spring:
@@ -13,6 +13,12 @@ spring:
       transport:
         dashboard: localhost:8080
         port: 8719
+  #数据源
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.146.128:3306/guli_cart?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
   #redis
   redis:
     host: 192.168.146.128
@@ -35,16 +41,12 @@ feign:
 #日志输出
 logging:
   level:
-    com.auguigu.gmall: debug
+    com.auguigu.gmall: info
 
 #auth公私钥配置
 auth:
   jwt:
     pubKeyPath: D:\atguigu\rsa\rsa.pub
-    priKeyPath: D:\atguigu\rsa\rsa.pri
-    secret: 30489ouerweljrLROE@#)(@$*343jlsdf
     cookieName: GMALL-TOKEN
-    expire: 180
-    unick: unick
-
-
+    expireTime: 15552000
+    userKey: userKey

@@ -5,13 +5,11 @@ import com.atguigu.gmall.common.bean.ResponseVo;
 import com.atguigu.gmall.index.sercive.IndexService;
 import com.atguigu.gmall.pms.entity.PmsCategoryEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -23,7 +21,9 @@ public class IndexController {
     private IndexService indexService;
 
     @GetMapping
-    public String toIndex(Model model){
+    public String toIndex(Model model,
+                          @RequestHeader(value = "userId" ,required = false)Long userId ,
+                          @RequestHeader(value = "username", required = false)String username){
 
          List<PmsCategoryEntity> categoryEntities =this.indexService.queryLv1Categories();
          model.addAttribute("categories",categoryEntities);

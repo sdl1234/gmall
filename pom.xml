@@ -22,6 +22,10 @@
         <module>gmall-sms-interface</module>
         <module>gmall-pms-interface</module>
         <module>gmall-wms-interface</module>
+        <module>gmall-ums-interface</module>
+        <module>gamll-cart-interface</module>
+        <module>gmall-caet-interface</module>
+        <module>gmall-cart-interface</module>
     </modules>
 
     <properties>

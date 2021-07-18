@@ -28,6 +28,13 @@ public class UmsUserController {
     @Autowired
     private UmsUserService umsUserService;
 
+
+    /**
+     * 用户查询
+     * @param loginName
+     * @param password
+     * @return
+     */
     @GetMapping("query")
     public ResponseVo<UmsUserEntity> queryUser(
             @RequestParam("loginName")String loginName,
